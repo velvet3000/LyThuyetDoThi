@@ -10,16 +10,22 @@ def main():
        print (line)
 
    if cau1(arr):
-       print ("Là độ thị vô hướng")
+       print ("Là đồ thị vô hướng")
    else:
        print ("Là đồ thị có hướng")
 
    # cau2
-   print("\nCâu 2:\n Danh sách đỉnh kề: ", *cau2(arr))
+   print("Câu 2:\n Danh sách đỉnh kề: ", *cau2(arr))
    # Cau3
-   print("Danh sách bậc của từng đỉnh theo thứ tự đỉnh: ", cau7(arr))
+   print("Câu 3:\nDanh sách bậc của từng đỉnh theo thứ tự đỉnh: ", *cau3(arr))
    # Cau4  
-   print("Số lượng đỉnh cô lập: ", cau7(arr))
+   print("Câu 4:\nSố lượng đỉnh bậc chẵn: ", cau4(arr))
+   # Cau5
+   print("Câu 5\nSố lượng đỉnh bậc lẻ: ", cau5(arr))
+   # Cau6 
+   print("Câu 6:\nSố lượng đỉnh treo: ", cau6(arr))
+   # Cau7 
+   print("Câu 7:\nSố lượng đỉnh cô lập: ", cau7(arr))
 
 def readFile(path):
     arr = []
@@ -56,7 +62,7 @@ def cau3(arr):
 def cau4(arr):
     count=0
     for line in arr:
-        count += sum(map(lambda i: i % 2 == 0, line))
+        count += sum(map(lambda i: i % 2 == 0 and i > 0, line))
     return count
 
 def cau5(arr):
