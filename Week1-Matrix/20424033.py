@@ -31,10 +31,8 @@ def isUnDirectGraph(arr):
     return True
 
 def cau2(arr):
-    i = 0
     result = []
     for i in range(len(arr)):
-        j = 0
         for j in range(len(arr)):
             if arr[i][j] > 0:
                 result.append(int(j + 1))
@@ -46,10 +44,8 @@ def cau3(arr):
         for line in arr:
             result.append(sum(map(lambda i: i > 0, line)))
     else:
-        i = 0
         total = 0
         for i in range(len(arr)):
-            j = 0
             for j in range(len(arr)):
                 if arr[i][j] > 0:
                     total += 1
@@ -61,7 +57,7 @@ def cau3(arr):
 
 
 def cau4(arr):
-    return sum(map(lambda i: i % 2 == 0 and i > 0, arr))
+    return sum(map(lambda i: i % 2 == 0, arr))
 
 def cau5(arr):
     return sum(map(lambda i: i % 2 != 0, arr))
