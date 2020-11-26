@@ -37,7 +37,7 @@ def DFS(matrix, start, end):
     visited = {}
     history = []
     path.append(start)
-    history.append(start)
+    history.append(start) #Biến history dùng để so sánh node với các đường đã đi
     visited[start] = -1
     while True:
         nearly = getNearly(matrix,start)
@@ -55,7 +55,7 @@ def DFS(matrix, start, end):
             else:
                 check = True
         if(check == True):
-            # Quay lai node truoc do
+            # Nếu node hết đường sẽ quay lai node truoc do
             visited.pop(path[len(path)-1])
             path.pop()
             start = path[len(path)-1]
