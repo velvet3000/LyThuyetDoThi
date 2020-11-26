@@ -1,0 +1,49 @@
+DFS:
+start = 0
+kề: 1 2 3 4 6
+xét chiều: 1 2 3 4 6
+theo số: 1
+
+start = 1
+kề: 0 4
+xét đã đi: 0 -> trùng 0
+theo số 4
+
+start = 4
+kề: 0 3
+xét đã đi: 0 1 -> trùng 0
+theo số 3
+
+start = 3
+kề: 0 2
+đã đi: 0 1 4 -> trùng 0
+đi theo 2
+
+start = 2
+kề: 0 1
+đã đi: 0 1 4 3 -> trùng 0 1
+quay lại 3
+
+start = 3
+kề 0 2
+đã đi: 0 1 4 3 2 -> trùng 0 2
+quay lại: 4
+
+start = 4
+kề: 0 3
+đã đi: 0 1 4 3 2 -> trùng 0 3
+quay lại 1
+
+start = 1
+kề: 0 4
+đã đi: 0 1 4 3 2 -> trùng 0 4
+quay lại 0
+
+start = 0
+kề: 1 2 3 4 6
+đã đi: 0 1 4 3 2 -> trùng 1 2 3 4
+đi 6
+xong
+0 -> 6
+
+0 1 4 3 2 3 4 1 0
