@@ -2,7 +2,6 @@ import numpy as np
 
 def getNearly(matrix,vertices):
     result = []
-   
     for i in range(len(matrix[vertices])):
         if matrix[vertices][i]>0:
             result.append(i)
@@ -33,12 +32,9 @@ def DFS(matrix, start, end):
         Founded path
     """
     # TODO: 
-    path = []
-    visited = {}
-    history = []
-    path.append(start)
-    history.append(start) #Biến history dùng để so sánh node với các đường đã đi
-    visited[start] = -1
+    path = [start]
+    visited = {start:-1}
+    history = [start]  #Biến history dùng để so sánh node với các đường đã đi
     while True:
         nearly = getNearly(matrix,start)
         check = False # kiểm tra trường hợp node hết đường đi
@@ -88,10 +84,36 @@ def BFS(matrix, start, end):
 
     # TODO: 
     
-    path=[]
-    visited={}
-   
-    return visited, path
+    result = [start]
+    visited = {start:-1}
+    history = [start]
+    while True:
+        nearly = getNearly(matrix, start)
+        newstart=-1
+        for element in nearly:
+            if element not in visited and element != start:
+                result.append(element)
+                visited[element] = start
+                newstart = element
+        start = newstart
+        # New step
+        if start == end:
+            nodeConnected = visited[end]
+            path = [end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                   print(result)
+                if visited[i] == -1:
+                    break
+            for i in list(visited.keys()):
+                if i not in path:
+                    del visited[i]
+            break
+        history.append(start)
+        start = result[1]
+    return visited,path
 
 
 def UCS(matrix, start, end, pos):

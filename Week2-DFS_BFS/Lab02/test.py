@@ -107,29 +107,17 @@ def dfs(matrix,start,end):
             
 #         print("\n")
 def bfs(matrix,start,end):
-    path = []
-    visited = {}
-    history = []
-    path.append(start)
-    history.append(start)
-    visited[start] = -1 
-
+    result = [start]
+    visited = {start:-1}
+    history = [start]
     while True:
         print("start:",start)
-        print("path:", path)
+        print("path:", result)
         nearly = getNearly(matrix, start)
-        check = False #Kiểm tra các phần tử trong đỉnh kề có phần từ nào = end
-        # for element in nearly:
-        #     if(element == end):
-        #         path.append(element)
-        #         start = element
-        #         # check = True
-        #         break
-        # if(check == False):
         newstart=-1
         for element in nearly:
             if element not in visited and element != start:
-                path.append(element)
+                result.append(element)
                 visited[element] = start
                 newstart = element
         start = newstart
@@ -137,26 +125,28 @@ def bfs(matrix,start,end):
         print("history:", history)
         # path.pop(0)
         print("new visited: ", visited)
-        print ("new path:", path)
+        print ("new path:", result)
         print("new start:",start)
         # New step
         if start == end:
             nodeConnected = visited[end]
-            result = [end]
+            path = [end]
             print('result: ')
-            for i in range(len(visited)-1, 0, -1):
+            for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
-                   result.append(i)
+                   path.insert(0,i)
                    nodeConnected = visited[i]
                    print(result)
                 if visited[i] == -1:
                     break
+            for i in list(visited.keys()):
+                if i not in path:
+                    del visited[i]
+            print("final path: ", path)
+            print("final visited: ", visited)
             break
         history.append(start)
-        start = path[1]
-        # if element not in getNearly(matrix,path[1]):
-        #     start = path.pop(1)
-            
+        start = result[1]
         print("\n")
 
 def main():
