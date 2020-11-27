@@ -47,3 +47,24 @@ xong
 0 -> 6
 
 0 1 4 3 2 3 4 1 0
+
+
+BFS:
+0->6
+
+start = 0
+kề:  1 2 3 4 6
+đã đi: 0 
+=> 0 -> 6
+
+1->6 queue = 1
+start = 1
+kề: 0 4
+đã đi: 1 
+queue: 0 4
+
+start = 0
+kề: 1 2 3 4 6 (6 = goal) and ignore 4(because it is in queue)
+đã đi: 1 0 (trùng 1)
+queue:4 
+=> 1 -> 0 -> 6

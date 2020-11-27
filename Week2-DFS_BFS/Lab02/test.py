@@ -68,9 +68,101 @@ def dfs(matrix,start,end):
     print("final history:", history)
     print("final visited:" , visited)
 
+# def bfs(matrix,start,end):
+#     path = []
+#     visited = {}
+#     history = []
+#     path.append(start)
+#     history.append(start)
+#     visited[start] = -1 
+
+#     while True:
+#         print("start:",start)
+#         print("path:", path)
+#         nearly = getNearly(matrix, start)
+#         check = False #Kiểm tra các phần tử trong đỉnh kề có phần từ nào = end
+#         for element in nearly:
+#             if(element == end):
+#                 path.append(element)
+#                 start = element
+#                 check = True
+#                 break
+#         if(check == False):
+#             for element in nearly:
+#                 if element not in path and element not in history:
+#                     path.append(element)
+#         print("nearly {}: {}".format(start,nearly))
+#         print("history:", history)
+#         # path.pop(0)
+
+#         print ("new path:", path)
+#         print("new start:",start)
+#         # New step
+#         if start == end:
+#             break
+#         history.append(start)
+#         start = path[1]
+#         if element not in getNearly(matrix,path[1]):
+#             start = path.pop(1)
+            
+#         print("\n")
+def bfs(matrix,start,end):
+    path = []
+    visited = {}
+    history = []
+    path.append(start)
+    history.append(start)
+    visited[start] = -1 
+
+    while True:
+        print("start:",start)
+        print("path:", path)
+        nearly = getNearly(matrix, start)
+        check = False #Kiểm tra các phần tử trong đỉnh kề có phần từ nào = end
+        # for element in nearly:
+        #     if(element == end):
+        #         path.append(element)
+        #         start = element
+        #         # check = True
+        #         break
+        # if(check == False):
+        newstart=-1
+        for element in nearly:
+            if element not in visited and element != start:
+                path.append(element)
+                visited[element] = start
+                newstart = element
+        start = newstart
+        print("nearly {}: {}".format(start,nearly))
+        print("history:", history)
+        # path.pop(0)
+        print("new visited: ", visited)
+        print ("new path:", path)
+        print("new start:",start)
+        # New step
+        if start == end:
+            nodeConnected = visited[end]
+            result = [end]
+            print('result: ')
+            for i in range(len(visited)-1, 0, -1):
+                if i == nodeConnected:
+                   result.append(i)
+                   nodeConnected = visited[i]
+                   print(result)
+                if visited[i] == -1:
+                    break
+            break
+        history.append(start)
+        start = path[1]
+        # if element not in getNearly(matrix,path[1]):
+        #     start = path.pop(1)
+            
+        print("\n")
+
 def main():
     matrix = readFile("data.txt")
-    dfs(matrix, 0 ,6)
+    # dfs(matrix, 1 ,6)
+    bfs(matrix,1,6)
 
 main()
     # i = 0
