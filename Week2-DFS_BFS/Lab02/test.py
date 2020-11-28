@@ -16,6 +16,7 @@ def checkNearlyInHistory(nearly,history):
         if i not in history:
             return True
     return False
+
 def dfs(matrix,start,end):
     path = []
     visited = {}
@@ -64,8 +65,8 @@ def dfs(matrix,start,end):
         temp += 1
         print("\n")
 
+    print("final history: {} \n".format(history))
     print("final path: ", path)
-    print("final history:", history)
     print("final visited:" , visited)
 
 # def bfs(matrix,start,end):
@@ -139,20 +140,67 @@ def bfs(matrix,start,end):
                    print(result)
                 if visited[i] == -1:
                     break
-            for i in list(visited.keys()):
-                if i not in path:
-                    del visited[i]
+            # for i in list(visited.keys()):
+            #     if i not in path:
+            #         del visited[i]
             print("final path: ", path)
             print("final visited: ", visited)
             break
         history.append(start)
         start = result[1]
         print("\n")
+def bfs2(matrix,start,end):
+    path = [end]
+    queue =[start]
+    visited = {start:-1}
+    # history = [start]
+    while True:
+        start = queue.pop(0)
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        print("Queue: ",queue)
+        for element in nearly:
+            if element not in visited:
+                queue.append(element)
+                visited[element] = start
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                   print("path", path)
+                   print("visited: ",visited)
+                if visited[i] == -1:
+                    break
+            break
+
+def dfs2(matrix,start,end):
+    path = [end]
+    stack =[start]
+    visited = {start:-1}
+    while True:
+        print ("stack:", stack)
+        start = stack.pop()
+        nearly = getNearly(matrix,start)
+        for element in nearly:
+            if element not in visited:
+                stack.append(element)
+                visited[element] = start
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
 
 def main():
     matrix = readFile("data.txt")
-    # dfs(matrix, 1 ,6)
-    bfs(matrix,1,6)
+    dfs2(matrix, 0 ,6)
+    # bfs2(matrix,1,6)
 
 main()
     # i = 0

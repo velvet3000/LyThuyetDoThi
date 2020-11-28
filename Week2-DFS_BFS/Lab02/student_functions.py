@@ -6,11 +6,6 @@ def getNearly(matrix,vertices):
         if matrix[vertices][i]>0:
             result.append(i)
     return result  
-def checkNearlyInHistory(nearly,history):
-    for i in nearly:
-        if i not in history:
-            return True
-    return False         
 def DFS(matrix, start, end):
     """
     BFS algorithm:
@@ -32,33 +27,25 @@ def DFS(matrix, start, end):
         Founded path
     """
     # TODO: 
-    path = [start]
+    path = [end]
+    stack =[start]
     visited = {start:-1}
-    history = [start]  #Biến history dùng để so sánh node với các đường đã đi
     while True:
+        start = stack.pop()
         nearly = getNearly(matrix,start)
-        check = False # kiểm tra trường hợp node hết đường đi
-        for i in range(len(nearly)):
-            nearlyChild = getNearly(matrix,nearly[i])
-            if nearly[i] not in path:
-                if checkNearlyInHistory(nearlyChild,history) == True or nearly[i] not in history:
-                    path.append(nearly[i])
-                    history.append(nearly[i])
-                    visited[nearly[i]] = start
-                    start = nearly[i]
-                    check = False
-                    break
-            else:
-                check = True
-        if(check == True):
-            # Nếu node hết đường sẽ quay lai node truoc do
-            visited.pop(path[len(path)-1])
-            path.pop()
-            start = path[len(path)-1]
-            history.append(start)
+        for element in nearly:
+            if element not in visited:
+                stack.append(element)
+                visited[element] = start
         if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
             break
-
     return visited, path
 
 def BFS(matrix, start, end):
@@ -84,35 +71,25 @@ def BFS(matrix, start, end):
 
     # TODO: 
     
-    result = [start]
+    path = [end]
+    queue =[start]
     visited = {start:-1}
-    history = [start]
     while True:
-        nearly = getNearly(matrix, start)
-        newstart=-1
+        start = queue.pop(0)
+        nearly = getNearly(matrix,start)
         for element in nearly:
-            if element not in visited and element != start:
-                result.append(element)
+            if element not in visited:
+                queue.append(element)
                 visited[element] = start
-                newstart = element
-        start = newstart
-        # New step
         if start == end:
             nodeConnected = visited[end]
-            path = [end]
             for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
                    path.insert(0,i)
                    nodeConnected = visited[i]
-                   print(result)
                 if visited[i] == -1:
                     break
-            for i in list(visited.keys()):
-                if i not in path:
-                    del visited[i]
             break
-        history.append(start)
-        start = result[1]
     return visited,path
 
 
