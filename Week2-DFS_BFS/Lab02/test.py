@@ -1,6 +1,7 @@
   # path=[1,0,6]
     # visited={1:-1, 1:0, 6:0, 3: 4}
 import numpy as np
+import math
 def readFile(path):
     data = np.loadtxt(path)
     return data
@@ -46,12 +47,11 @@ def dfs(matrix,start,end):
                     start = nearly[i]
                     check = False
                     break
-            
             else:
                 check = True
         if(check == True):
             # Quay lai node truoc do
-            visited.pop(path[len(path)-1])
+            # visited.pop(path[len(path)-1])
             # visited[path[len(path)-1]] = start
             # visited[]
             path.pop()
@@ -148,6 +148,7 @@ def bfs(matrix,start,end):
             break
         history.append(start)
         start = result[1]
+        
         print("\n")
 def bfs2(matrix,start,end):
     path = [end]
@@ -155,26 +156,34 @@ def bfs2(matrix,start,end):
     visited = {start:-1}
     # history = [start]
     while True:
-        start = queue.pop(0)
-        nearly = getNearly(matrix,start)
-        print("start: {} \n nearly[: {}".format(start,nearly))
         print("Queue: ",queue)
-        for element in nearly:
-            if element not in visited:
-                queue.append(element)
-                visited[element] = start
+        start = queue.pop(0)
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
                    path.insert(0,i)
                    nodeConnected = visited[i]
-                   print("path", path)
-                   print("visited: ",visited)
                 if visited[i] == -1:
                     break
             break
-
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                queue.append(element)
+                visited[element] = start
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)
+def getWeight(matrix):
+    weightNode = {}
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[i][j] > 0:
+                weightNode[i,j] = matrix[i][j]
+    return weightNode
 def dfs2(matrix,start,end):
     path = [end]
     stack =[start]
@@ -182,11 +191,6 @@ def dfs2(matrix,start,end):
     while True:
         print ("stack:", stack)
         start = stack.pop()
-        nearly = getNearly(matrix,start)
-        for element in nearly:
-            if element not in visited:
-                stack.append(element)
-                visited[element] = start
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
@@ -196,10 +200,144 @@ def dfs2(matrix,start,end):
                 if visited[i] == -1:
                     break
             break
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                stack.append(element)
+                visited[element] = start
+        print("visted: {} ",format(visited))
+        print("\n")
+    print ("final path: ", path)
+    print("final visted: ", visited)
+def ucs(matrix,start,end,weightNode):
+    path = [end]
+    queue = {start:0}
+    # queue = [start]
+    visited = {start:-1}
+    print(weightNode)
+    while True:
+        print("Queue: ",queue)
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        print (key_min)
+        start = key_min
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element] + queue[start]
+                visited[element] = start
+        queue.pop(key_min)
+        print("new queue:" , queue)
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)
+
+def sortQueue(queue):
+    for i in range(len(queue)-1):   
+        print(i)
+def bestfs(matrix,start,end,weightNode):
+    path = [end]
+    queue = {start:0}
+    # queue = [start]
+    visited = {start:-1}
+    print(weightNode)
+    while True:
+        print("Queue: ",queue)
+        if(len(queue)) != 0:
+            key_min = min(queue.keys(), key=(lambda k: queue[k]))
+            print (key_min)
+            start = key_min
+            queue.pop(key_min)
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element]
+                visited[element] = start
+        print("new queue:" , queue)
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)
+def getDistance(pos, begin, end):
+
+
+    distance = math.sqrt((pos[begin][0] - pos[end][0])*(pos[begin][0] - pos[end][0])
+                         + (pos[begin][1] - pos[end][1])*(pos[begin][1] - pos[end][1]))
+    return distance
+def astart(matrix,start,end,pos,weightNode):
+    path = [end]
+    queue = {start:0}
+    # queue = [start]
+    visited = {start:-1}
+    print(weightNode)
+    while True:
+        print("Queue: ",queue)
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        print (key_min)
+        start = key_min
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        nearly = getNearly(matrix,start)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element] + queue[start] + getDistance(pos, element, end)
+                visited[element] = start
+        queue.pop(key_min)
+        print("new queue:" , queue)
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)
 
 def main():
-    matrix = readFile("data.txt")
-    dfs2(matrix, 0 ,6)
+    matrix = readFile("data.txt").astype(int)
+    weightNode = getWeight(matrix)
+    
+    # bestfs(matrix,1,6,weightNode)
+    print("\n\n")
+    # print("pos: ",weightNode)
+    pos = {0: [-0.08421155,  0.07048411], 1: [0.2486729 , 0.19773199], 2: [-0.37820785,  0.2237471 ], 3: [-0.17160918,  0.57472971], 4: [0.394171 , 0.3848759], 6: [-0.10487227, -1], 5: [0.09605695, -0.4515688]}
+    print(pos)
+    x = pos[0][0]
+    y = pos[0][1]
+    print(x)
+    print(y)
+    print("sum", y-x)
+    distance = getDistance(pos,0, 1)
+    print ("distance: ,",distance)
+    # print (pos[0,1])
+    # key_max = min(pos.keys(), key=(lambda k: pos[k]))
+    # print (key_max)
+    # ucs(matrix,start,end,pos)
     # bfs2(matrix,1,6)
 
 main()

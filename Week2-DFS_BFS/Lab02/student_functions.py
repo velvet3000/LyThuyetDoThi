@@ -32,11 +32,6 @@ def DFS(matrix, start, end):
     visited = {start:-1}
     while True:
         start = stack.pop()
-        nearly = getNearly(matrix,start)
-        for element in nearly:
-            if element not in visited:
-                stack.append(element)
-                visited[element] = start
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
@@ -46,7 +41,14 @@ def DFS(matrix, start, end):
                 if visited[i] == -1:
                     break
             break
+        nearly = getNearly(matrix,start)
+        for element in nearly:
+            if element not in visited:
+                stack.append(element)
+                visited[element] = start
+    print(visited,path)
     return visited, path
+
 
 def BFS(matrix, start, end):
     """
@@ -76,11 +78,6 @@ def BFS(matrix, start, end):
     visited = {start:-1}
     while True:
         start = queue.pop(0)
-        nearly = getNearly(matrix,start)
-        for element in nearly:
-            if element not in visited:
-                queue.append(element)
-                visited[element] = start
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
@@ -90,6 +87,12 @@ def BFS(matrix, start, end):
                 if visited[i] == -1:
                     break
             break
+        nearly = getNearly(matrix,start)
+        for element in nearly:
+            if element not in visited:
+                queue.append(element)
+                visited[element] = start
+    print(visited, path)
     return visited,path
 
 
@@ -117,4 +120,5 @@ def UCS(matrix, start, end, pos):
     # TODO: 
     path=[]
     visited={}
+    print (pos)
     return visited, path
