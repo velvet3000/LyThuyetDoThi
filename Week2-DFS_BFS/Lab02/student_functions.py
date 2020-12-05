@@ -1,4 +1,5 @@
 import numpy as np
+# Đã fix lại lỗi visited ở bài trước
 
 def getNearly(matrix,vertices):
     result = []
@@ -6,6 +7,14 @@ def getNearly(matrix,vertices):
         if matrix[vertices][i]>0:
             result.append(i)
     return result  
+def getParent(vertice,matrix,visited):
+    parent = []
+    for i in range(len(matrix)):
+        if matrix[i][vertice] > 0:
+            parent.append(i)
+    for element in visited:
+        if element in parent:
+            return element
 def DFS(matrix, start, end):
     """
     BFS algorithm:
@@ -29,25 +38,26 @@ def DFS(matrix, start, end):
     # TODO: 
     path = [end]
     stack =[start]
-    visited = {start:-1}
-    while True:
-        start = stack.pop()
+    visited = {}
+    while len(stack) != 0:
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
                    path.insert(0,i)
                    nodeConnected = visited[i]
-                if visited[i] == -1:
-                    break
-            break
+            break # Tới end nên dừng lại
+        if len(visited) == 0:
+            visited[stack[len(stack)-1]] = -1
+        else:
+            visited[stack[len(stack)-1]] = start  
+        start = stack.pop()
         nearly = getNearly(matrix,start)
         for element in nearly:
-            if element not in visited:
+            if element not in visited and element not in stack:
                 stack.append(element)
-                visited[element] = start
     print(visited,path)
-    return visited, path
+    return visited,path
 
 
 def BFS(matrix, start, end):
@@ -75,26 +85,26 @@ def BFS(matrix, start, end):
     
     path = [end]
     queue =[start]
-    visited = {start:-1}
-    while True:
-        start = queue.pop(0)
+    visited = {}
+    while len(queue) != 0:
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
                    path.insert(0,i)
                    nodeConnected = visited[i]
-                if visited[i] == -1:
-                    break
-            break
+            break # Tới end nên dừng lại
+        if len(visited) == 0:
+            visited[queue[0]] = -1
+        else:
+            visited[queue[0]] = getParent(queue[0], matrix,visited)
+        start = queue.pop(0)
         nearly = getNearly(matrix,start)
         for element in nearly:
-            if element not in visited:
+            if element not in visited and element not in queue:
                 queue.append(element)
-                visited[element] = start
-    print(visited, path)
-    return visited,path
-
+    print(visited,path)
+    return visited, path
 
 def UCS(matrix, start, end, pos):
     """

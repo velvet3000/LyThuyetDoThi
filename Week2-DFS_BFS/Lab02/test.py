@@ -2,6 +2,23 @@
     # visited={1:-1, 1:0, 6:0, 3: 4}
 import numpy as np
 import math
+def main():
+    matrix = readFile("data.txt").astype(int)
+    weightNode = getWeight(matrix)
+    
+    print("\n\n")
+    pos = {0: [-0.08421155,  0.07048411], 1: [0.2486729 , 0.19773199], 2: [-0.37820785,  0.2237471 ], 3: [-0.17160918,  0.57472971], 4: [0.394171 , 0.3848759], 6: [-0.10487227, -1], 5: [0.09605695, -0.4515688]}
+    # bfs2(matrix,1,6)
+    newbfs(matrix,1,6)
+    # print(getParent(0,matrix))
+def getParent(vertice,matrix,visited):
+    parent = []
+    for i in range(len(matrix)):
+        if matrix[i][vertice] > 0:
+            parent.append(i)
+    for element in visited:
+        if element in parent:
+            return element
 def readFile(path):
     data = np.loadtxt(path)
     return data
@@ -17,57 +34,84 @@ def checkNearlyInHistory(nearly,history):
         if i not in history:
             return True
     return False
-
-def dfs(matrix,start,end):
-    path = []
+def newbfs(matrix,start,end):
+    path = [end]
+    queue =[start]
     visited = {}
-    history = []
-    path.append(start)
-    history.append(start)
-    visited[start] = -1
-    
-    temp = 0
-    while True:
-        nearly = getNearly(matrix,start)
-        print("dinh: ", start)
-        print("child: ", nearly)
-        print("path: ",path )
-
-        print("history: ", history)
-        print("visited: ",visited)
-        check = False # kiểm tra trường hợp node hết đường đi
-        for i in range(len(nearly)):
-            nearlyChild = getNearly(matrix,nearly[i])
-            print("nearly child {} : {}".format(nearly[i],nearlyChild))
-            if nearly[i] not in path:
-                if checkNearlyInHistory(nearlyChild,history) == True or nearly[i] not in history:
-                    path.append(nearly[i])
-                    history.append(nearly[i])
-                    visited[nearly[i]] = start
-                    start = nearly[i]
-                    check = False
-                    break
-            else:
-                check = True
-        if(check == True):
-            # Quay lai node truoc do
-            # visited.pop(path[len(path)-1])
-            # visited[path[len(path)-1]] = start
-            # visited[]
-            path.pop()
-            start = path[len(path)-1]
-            history.append(start)
+    while len(queue) != 0:
+        print ("queue:", queue)
         if start == end:
-            break
-        print("new path;",path)
-        print("new historyL ",history)
-        print("new visited:", visited)
-        temp += 1
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+            break # Tới end nên dừng lại
+        if len(visited) == 0:
+            visited[queue[0]] = -1
+        else:
+            visited[queue[0]] = getParent(queue[0], matrix,visited)
+        start = queue.pop(0)
+        nearly = getNearly(matrix,start)
+        for element in nearly:
+            if element not in visited and element not in queue:
+                queue.append(element)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        print("new queue", queue)
+        print("visted: {} ".format(visited))
         print("\n")
+    print ("final path: ", path)
+    print("final visted: ", visited)
+# def dfs(matrix,start,end):
+#     path = []
+#     visited = {}
+#     history = []
+#     path.append(start)
+#     history.append(start)
+#     visited[start] = -1
+    
+#     temp = 0
+#     while True:
+#         nearly = getNearly(matrix,start)
+#         print("dinh: ", start)
+#         print("child: ", nearly)
+#         print("path: ",path )
 
-    print("final history: {} \n".format(history))
-    print("final path: ", path)
-    print("final visited:" , visited)
+#         print("history: ", history)
+#         print("visited: ",visited)
+#         check = False # kiểm tra trường hợp node hết đường đi
+#         for i in range(len(nearly)):
+#             nearlyChild = getNearly(matrix,nearly[i])
+#             print("nearly child {} : {}".format(nearly[i],nearlyChild))
+#             if nearly[i] not in path:
+#                 if checkNearlyInHistory(nearlyChild,history) == True or nearly[i] not in history:
+#                     path.append(nearly[i])
+#                     history.append(nearly[i])
+#                     visited[nearly[i]] = start
+#                     start = nearly[i]
+#                     check = False
+#                     break
+#             else:
+#                 check = True
+#         if(check == True):
+#             # Quay lai node truoc do
+#             # visited.pop(path[len(path)-1])
+#             # visited[path[len(path)-1]] = start
+#             # visited[]
+#             path.pop()
+#             start = path[len(path)-1]
+#             history.append(start)
+#         if start == end:
+#             break
+#         print("new path;",path)
+#         print("new historyL ",history)
+#         print("new visited:", visited)
+#         temp += 1
+#         print("\n")
+
+#     print("final history: {} \n".format(history))
+#     print("final path: ", path)
+#     print("final visited:" , visited)
 
 # def bfs(matrix,start,end):
 #     path = []
@@ -187,25 +231,27 @@ def getWeight(matrix):
 def dfs2(matrix,start,end):
     path = [end]
     stack =[start]
-    visited = {start:-1}
-    while True:
-        print ("stack:", stack)
-        start = stack.pop()
+    visited = {}
+    print ("stack:", stack)
+    while len(stack) != 0:
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
                 if i == nodeConnected:
                    path.insert(0,i)
                    nodeConnected = visited[i]
-                if visited[i] == -1:
-                    break
-            break
+            break # Tới end nên dừng lại
+        if len(visited) == 0:
+            visited[stack[len(stack)-1]] = -1
+        else:
+            visited[stack[len(stack)-1]] = start  
+        start = stack.pop()
         nearly = getNearly(matrix,start)
-        print("start: {} \n nearly[: {}".format(start,nearly))
         for element in nearly:
-            if element not in visited:
+            if element not in visited and element not in stack:
                 stack.append(element)
-                visited[element] = start
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        print("stack", stack)
         print("visted: {} ",format(visited))
         print("\n")
     print ("final path: ", path)
@@ -309,6 +355,7 @@ def astart(matrix,start,end,pos,weightNode):
         print("start: {} \n nearly[: {}".format(start,nearly))
         for element in nearly:
             if element not in visited:
+                print("distane({}, {}) = {}".format(element,end,getDistance(pos,element,end)))
                 queue[element] = weightNode[start, element] + queue[start] + getDistance(pos, element, end)
                 visited[element] = start
         queue.pop(key_min)
@@ -318,27 +365,6 @@ def astart(matrix,start,end,pos,weightNode):
     print("final path:" , path)
     print("final visited: ",visited)
 
-def main():
-    matrix = readFile("data.txt").astype(int)
-    weightNode = getWeight(matrix)
-    
-    # bestfs(matrix,1,6,weightNode)
-    print("\n\n")
-    # print("pos: ",weightNode)
-    pos = {0: [-0.08421155,  0.07048411], 1: [0.2486729 , 0.19773199], 2: [-0.37820785,  0.2237471 ], 3: [-0.17160918,  0.57472971], 4: [0.394171 , 0.3848759], 6: [-0.10487227, -1], 5: [0.09605695, -0.4515688]}
-    print(pos)
-    x = pos[0][0]
-    y = pos[0][1]
-    print(x)
-    print(y)
-    print("sum", y-x)
-    distance = getDistance(pos,0, 1)
-    print ("distance: ,",distance)
-    # print (pos[0,1])
-    # key_max = min(pos.keys(), key=(lambda k: pos[k]))
-    # print (key_max)
-    # ucs(matrix,start,end,pos)
-    # bfs2(matrix,1,6)
 
 main()
     # i = 0
