@@ -15,6 +15,13 @@ def getParent(vertice,matrix,visited):
     for element in visited:
         if element in parent:
             return element
+def getWeight(matrix):
+    weightNode = {}
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[i][j] > 0:
+                weightNode[i,j] = matrix[i][j]
+    return weightNode
 def DFS(matrix, start, end):
     """
     BFS algorithm:
@@ -94,18 +101,16 @@ def BFS(matrix, start, end):
                    path.insert(0,i)
                    nodeConnected = visited[i]
             break # Tới end nên dừng lại
-        if len(visited) == 0:
-            visited[queue[0]] = -1
-        else:
-            visited[queue[0]] = getParent(queue[0], matrix,visited)
         start = queue.pop(0)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
         nearly = getNearly(matrix,start)
         for element in nearly:
             if element not in visited and element not in queue:
                 queue.append(element)
-    print(visited,path)
-    return visited, path
-
+    return visited,path
 def UCS(matrix, start, end, pos):
     """
     Uniform Cost Search algorithm
@@ -128,7 +133,82 @@ def UCS(matrix, start, end, pos):
         Founded path
     """
     # TODO: 
-    path=[]
-    visited={}
-    print (pos)
+    path = [end]
+    queue = {start:0}
+    visited = {}
+    weightNode = getWeight(matrix)
+    while True:
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        start = key_min
+        nearly = getNearly(matrix,start)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
+        for element in nearly:
+            if element not in visited and element not in queue:
+                queue[element] = weightNode[start, element] + queue[start]
+        queue.pop(key_min)
     return visited, path
+
+def BestFS(matrix,start,end):
+    path = [end]
+    queue = {start:0}
+    visited = {}
+    weightNode = getWeight(matrix)
+    while True:
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        start = key_min
+        queue.pop(key_min)
+        nearly = getNearly(matrix,start)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element]
+        return visited,path
+
+def astart(matrix,start,end,pos,weightNode):
+    path = [end]
+    queue = {start:0}
+    visited = {start:-1}
+    weightNode = getWeight(matrix)
+    while True:
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        start = key_min
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        nearly = getNearly(matrix,start)
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element] + queue[start] + getDistance(pos, element, end)
+                visited[element] = start
+        queue.pop(key_min)
+    return visited,path

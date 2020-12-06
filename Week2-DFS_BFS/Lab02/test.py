@@ -8,8 +8,9 @@ def main():
     
     print("\n\n")
     pos = {0: [-0.08421155,  0.07048411], 1: [0.2486729 , 0.19773199], 2: [-0.37820785,  0.2237471 ], 3: [-0.17160918,  0.57472971], 4: [0.394171 , 0.3848759], 6: [-0.10487227, -1], 5: [0.09605695, -0.4515688]}
-    # bfs2(matrix,1,6)
-    newbfs(matrix,1,6)
+    # dfs2(matrix,1,6)
+    # newbfs(matrix,1,6)
+    newucs(matrix,1,6,weightNode)
     # print(getParent(0,matrix))
 def getParent(vertice,matrix,visited):
     parent = []
@@ -34,6 +35,7 @@ def checkNearlyInHistory(nearly,history):
         if i not in history:
             return True
     return False
+
 def newbfs(matrix,start,end):
     path = [end]
     queue =[start]
@@ -47,11 +49,11 @@ def newbfs(matrix,start,end):
                    path.insert(0,i)
                    nodeConnected = visited[i]
             break # Tới end nên dừng lại
-        if len(visited) == 0:
-            visited[queue[0]] = -1
-        else:
-            visited[queue[0]] = getParent(queue[0], matrix,visited)
         start = queue.pop(0)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
         nearly = getNearly(matrix,start)
         for element in nearly:
             if element not in visited and element not in queue:
@@ -292,6 +294,76 @@ def ucs(matrix,start,end,weightNode):
 def sortQueue(queue):
     for i in range(len(queue)-1):   
         print(i)
+def newucs(matrix,start,end,weightNode):
+    path = [end]
+    queue = {start:0}
+    # queue = [start]
+    visited = {}
+    print(weightNode)
+    while True:
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        print("Queue: ",queue)
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        print ("key_min: ", key_min)
+        start = key_min
+        nearly = getNearly(matrix,start)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited and element not in queue:
+                queue[element] = weightNode[start, element] + queue[start]
+        queue.pop(key_min)
+        print("new queue:" , queue)
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)   
+def newbestfs(matrix,start,end,weightNode):
+    path = [end]
+    queue = {start:0}
+    # queue = [start]
+    visited = {}
+    print(weightNode)
+    while True:
+        if start == end:
+            nodeConnected = visited[end]
+            for i in reversed(list(visited.keys())):
+                if i == nodeConnected:
+                   path.insert(0,i)
+                   nodeConnected = visited[i]
+                if visited[i] == -1:
+                    break
+            break
+        print("Queue: ",queue)
+        key_min = min(queue.keys(), key=(lambda k: queue[k]))
+        print ("key_min: ", key_min)
+        start = key_min
+        queue.pop(key_min)
+        nearly = getNearly(matrix,start)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
+        print("start: {} \n nearly[: {}".format(start,nearly))
+        for element in nearly:
+            if element not in visited:
+                queue[element] = weightNode[start, element]
+        print("new queue:" , queue)
+        print("visited: ", visited)
+        print("\n")
+    print("final path:" , path)
+    print("final visited: ",visited)   
 def bestfs(matrix,start,end,weightNode):
     path = [end]
     queue = {start:0}
