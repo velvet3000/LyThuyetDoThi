@@ -90,9 +90,9 @@ def getNearly(matrix,vertices):
     return result
 def getWeight(matrix):
     weightNode = {}
-    for i in range(len(matrix)):
+    for i in reversed(range(len(matrix))):
         for j in range(len(matrix)):
-            if matrix[i][j] > 0:
+            if matrix[i][j] > 0 and (i,j) not in list(weightNode.keys()) and (j,i) not in list(weightNode.keys()):
                 weightNode[i,j] = matrix[i][j]
     return weightNode
 
@@ -134,14 +134,19 @@ def Prim(matrix):
         if len(u) == len(matrix):
             break
         nearly = getNearly(matrix,start_v)
-        for element in nearly:
-            queue[start_v,element] = weightNode[start_v,element]
-        key_min = findKeyMin(u,queue)
+        for element in nearly: #Thêm các cạnh kề vào queue
+            if element not in u:
+                if (start_v, element) in weightNode:
+                    queue[start_v,element] = weightNode[start_v,element]
+                else:
+                    queue[start_v,element] = weightNode[element,start_v]
+        key_min = findKeyMin(u,queue) #find key min
         v_u.remove(key_min[1])
-        edges.append([start_v,key_min[1]])
+        edges.append(key_min)
         start_v = key_min[1]
         del queue[key_min]
     return edges
+
 def Kruskal(matrix):
     """
     DFS algorithm

@@ -3,7 +3,8 @@ import queue as PriorityQueue
 def main():
     matrix = readFile("MST.txt").astype(int)
     prim(matrix)
-    weightNode = getWeight(matrix)
+    # weightNode = getWeight(matrix)
+    # print(weightNode)?
 def readFile(path):
     data = np.loadtxt(path)
     return data
@@ -15,9 +16,9 @@ def getNearly(matrix,vertices):
     return result
 def getWeight(matrix):
     weightNode = {}
-    for i in range(len(matrix)):
+    for i in reversed(range(len(matrix))):
         for j in range(len(matrix)):
-            if matrix[i][j] > 0:
+            if matrix[i][j] > 0 and (i,j) not in list(weightNode.keys()) and (j,i) not in list(weightNode.keys()):
                 weightNode[i,j] = matrix[i][j]
     return weightNode
 def isCircle(u, element):
@@ -35,6 +36,7 @@ def prim(matrix):
     for i in range(len(matrix)):
         v_u.append(i)
     u = []
+    
     weightNode = getWeight(matrix)
     # queue = PriorityQueue()
     # isCircle = {}
@@ -54,7 +56,11 @@ def prim(matrix):
 
         print("start_v: {}, {}".format(start_v,nearly))
         for element in nearly:
-            queue[start_v,element] = weightNode[start_v,element]
+            if element not in u:
+                if (start_v, element) in weightNode:
+                    queue[start_v,element] = weightNode[start_v,element]
+                else:
+                    queue[start_v,element] = weightNode[element,start_v]
     # find key_min
         print("queue: ", queue)
 
