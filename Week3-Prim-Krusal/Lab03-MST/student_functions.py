@@ -151,13 +151,13 @@ def Kruskal(matrix):
 
     allEdges = list(getWeight(matrix).keys()) #get all edges with their weight
     tag = createTag(allEdges) #tag with [min,max] of item
-    edges = [allEdges.pop(0)]              #return value
-    while len(edges) < len(matrix):
+    edges = []              #return value
+    while len(edges) != len(matrix)-1:
         checkItem = allEdges.pop(0)
         if notCycle(checkItem, tag):  #check if add edge becoming a cycle of not
             edges.append(checkItem)
             setTag(tag,checkItem)
-    print("edges: \n {}".format(edges))
+    print(edges)
     return edges
 
 def getWeight(matrix):
