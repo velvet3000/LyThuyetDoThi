@@ -1,6 +1,8 @@
   # path=[1,0,6]
     # visited={1:-1, 1:0, 6:0, 3: 4}
 import numpy as np
+from queue import PriorityQueue 
+  
 import math
 def main():
     matrix = readFile("data.txt").astype(int)
@@ -10,7 +12,8 @@ def main():
     pos = {0: [-0.08421155,  0.07048411], 1: [0.2486729 , 0.19773199], 2: [-0.37820785,  0.2237471 ], 3: [-0.17160918,  0.57472971], 4: [0.394171 , 0.3848759], 6: [-0.10487227, -1], 5: [0.09605695, -0.4515688]}
     # dfs2(matrix,1,6)
     # newbfs(matrix,1,6)
-    newucs(matrix,1,6,weightNode)
+    # newucs(matrix,1,6,weightNode)
+    astart(matrix,1,6, pos, weightNode)
     # print(getParent(0,matrix))
 def getParent(vertice,matrix,visited):
     parent = []
@@ -258,17 +261,17 @@ def dfs2(matrix,start,end):
         print("\n")
     print ("final path: ", path)
     print("final visted: ", visited)
+
+def sortQueue(queue):
+    for i in range(len(queue)-1):   
+        print(i)
 def ucs(matrix,start,end,weightNode):
     path = [end]
-    queue = {start:0}
-    # queue = [start]
-    visited = {start:-1}
+    queue = PriorityQueue()
+    queue.put(0,start,-1)
+    visited = {}
     print(weightNode)
     while True:
-        print("Queue: ",queue)
-        key_min = min(queue.keys(), key=(lambda k: queue[k]))
-        print (key_min)
-        start = key_min
         if start == end:
             nodeConnected = visited[end]
             for i in reversed(list(visited.keys())):
@@ -278,23 +281,28 @@ def ucs(matrix,start,end,weightNode):
                 if visited[i] == -1:
                     break
             break
+        print("Queue: ",queue)
+        temp = queue.get()
+        key_min = temp[1]
+        print ("key_min: ", key_min)
+        start = key_min
         nearly = getNearly(matrix,start)
+        if len(visited) == 0:
+            visited[start] = -1
+        else:
+            visited[start] = getParent(start, matrix,visited)
         print("start: {} \n nearly[: {}".format(start,nearly))
         for element in nearly:
-            if element not in visited:
+            if element not in visited and element not in queue[0]:
                 queue[element] = weightNode[start, element] + queue[start]
-                visited[element] = start
         queue.pop(key_min)
         print("new queue:" , queue)
         print("visited: ", visited)
         print("\n")
     print("final path:" , path)
-    print("final visited: ",visited)
-
-def sortQueue(queue):
-    for i in range(len(queue)-1):   
-        print(i)
+    print("final visited: ",visited)   
 def newucs(matrix,start,end,weightNode):
+    # (a,b,c) a: weight of b, c:parent of b
     path = [end]
     queue = {start:0}
     # queue = [start]
@@ -434,11 +442,49 @@ def astart(matrix,start,end,pos,weightNode):
         print("new queue:" , queue)
         print("visited: ", visited)
         print("\n")
+    print(pos)
     print("final path:" , path)
+    
     print("final visited: ",visited)
 
 
 main()
+# def newucs(matrix,start,end,weightNode):
+#     # (a,b,c) a: weight of b, c:parent of b
+#     path = [end]
+#     queue = {start:0}
+#     # queue = [start]
+#     visited = {}
+#     print(weightNode)
+#     while True:
+#         if start == end:
+#             nodeConnected = visited[end]
+#             for i in reversed(list(visited.keys())):
+#                 if i == nodeConnected:
+#                    path.insert(0,i)
+#                    nodeConnected = visited[i]
+#                 if visited[i] == -1:
+#                     break
+#             break
+#         print("Queue: ",queue)
+#         key_min = min(queue.keys(), key=(lambda k: queue[k]))
+#         print ("key_min: ", key_min)
+#         start = key_min
+#         nearly = getNearly(matrix,start)
+#         if len(visited) == 0:
+#             visited[start] = -1
+#         else:
+#             visited[start] = getParent(start, matrix,visited)
+#         print("start: {} \n nearly[: {}".format(start,nearly))
+#         for element in nearly:
+#             if element not in visited and element not in queue:
+#                 queue[element] = weightNode[start, element] + queue[start]
+#         queue.pop(key_min)
+#         print("new queue:" , queue)
+#         print("visited: ", visited)
+#         print("\n")
+#     print("final path:" , path)
+#     print("final visited: ",visited)   
     # i = 0
     # while i < 12:
         # print ("dinh: ", start)
@@ -559,3 +605,35 @@ main()
 #             break
 #     return check
 
+# def ucs(matrix,start,end,weightNode):
+#     path = [end]
+#     queue = {start:0}
+#     # queue = [start]
+#     visited = {start:-1}
+#     print(weightNode)
+#     while True:
+#         print("Queue: ",queue)
+#         key_min = min(queue.keys(), key=(lambda k: queue[k]))
+#         print (key_min)
+#         start = key_min
+#         if start == end:
+#             nodeConnected = visited[end]
+#             for i in reversed(list(visited.keys())):
+#                 if i == nodeConnected:
+#                    path.insert(0,i)
+#                    nodeConnected = visited[i]
+#                 if visited[i] == -1:
+#                     break
+#             break
+#         nearly = getNearly(matrix,start)
+#         print("start: {} \n nearly[: {}".format(start,nearly))
+#         for element in nearly:
+#             if element not in visited:
+#                 queue[element] = weightNode[start, element] + queue[start]
+#                 visited[element] = start
+#         queue.pop(key_min)
+#         print("new queue:" , queue)
+#         print("visited: ", visited)
+#         print("\n")
+#     print("final path:" , path)
+#     print("final visited: ",visited)

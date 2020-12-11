@@ -1,4 +1,5 @@
 import numpy as np
+import operator
 
 def DFS(matrix, start, end):
     """
@@ -82,26 +83,7 @@ def UCS(matrix, start, end, pos):
     visited={}
     return visited, path
 
-def getNearly(matrix,vertices):
-    result = []
-    for i in range(len(matrix[vertices])):
-        if matrix[vertices][i]>0:
-            result.append(i)
-    return result
-def getWeight(matrix):
-    weightNode = {}
-    for i in reversed(range(len(matrix))):
-        for j in range(len(matrix)):
-            if matrix[i][j] > 0 and (i,j) not in list(weightNode.keys()) and (j,i) not in list(weightNode.keys()):
-                weightNode[i,j] = matrix[i][j]
-    return weightNode
 
-def findKeyMin(u, queue):
-    newqueue = queue.copy()
-    for i in list(newqueue):
-        if i[1] in u and i[0] in u:
-            del newqueue[i]
-    return min(newqueue, key=newqueue.get)
 def Prim(matrix):
     """
     BFS algorithm:
@@ -166,7 +148,68 @@ def Kruskal(matrix):
         example: [(1,2),(3,4),(4,5)]
     """ 
     # TODO: 
-    edges=[]
+
+    allEdges = list(getWeight(matrix).keys()) #get all edges with their weight
+    tag = createTag(allEdges) #tag with [min,max] of item
+    edges = [allEdges.pop(0)]              #return value
+    while len(edges) < len(matrix):
+        checkItem = allEdges.pop(0)
+        if notCycle(checkItem, tag):  #check if add edge becoming a cycle of not
+            edges.append(checkItem)
+            setTag(tag,checkItem)
+    print("edges: \n {}".format(edges))
     return edges
 
+def getWeight(matrix):
+    weightNode = {}
+    sorted_dict = {}
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[j][i] > 0 and (i,j) not in list(weightNode.keys()) and (j,i) not in list(weightNode.keys()):
+                weightNode[i,j] = matrix[j][i]
+    sorted_tuples = sorted(weightNode.items(), key=operator.itemgetter(1))
+    for k, v in sorted_tuples:
+        sorted_dict[k] = v
+    return sorted_dict
+
+def findKeyMin(u, queue):
+    newqueue = queue.copy()
+    for i in list(newqueue):
+        if i[1] in u and i[0] in u:
+            del newqueue[i]
+    return min(newqueue, key=newqueue.get)
     
+def getNearly(matrix,vertices):
+    result = []
+    for i in range(len(matrix[vertices])):
+        if matrix[vertices][i]>0:
+            result.append(i)
+    return result
+
+def createTag(allEdges):
+    tag = {}
+    for i in allEdges:
+        tag[i[0]] = [i[0], i[0]]
+        tag[i[1]] = [i[1],i[1]]
+    return tag
+
+def setTag(tag, edge):
+    min = tag[edge[0]][0] #Tìm giá trị min, max trong 2 đỉnh để gán
+    max = tag[edge[0]][1]
+    if tag[edge[1]][0] < min:
+        min = tag[edge[1]][0]
+    if tag[edge[1]][1] > max:
+        max =tag[edge[1]][1]
+    tag[edge[1]] = [min,max]
+    tag[edge[0]] = [min,max]
+    for element in tag.keys(): #gán min max cho các đỉnh có liên kết với đỉnh đag xét
+        if tag[element][0] == min:
+            tag[element] = [min,max]
+        if tag[element][1] == max:
+            tag[element] = [min,max]
+    return
+
+def notCycle(item, tag):
+    if tag[item[0]][0] in tag[item[1]] and tag[item[0]][1] in tag[item[1]]:
+        return False #Kiểm tra tag min max của đỉnh có trùng với nhau ko
+    return True

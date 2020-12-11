@@ -1,6 +1,13 @@
 import numpy as np
+import math
 # Đã fix lại lỗi visited ở bài trước
 
+def getDistance(pos, begin, end):
+
+
+    distance = math.sqrt((pos[begin][0] - pos[end][0])*(pos[begin][0] - pos[end][0])
+                         + (pos[begin][1] - pos[end][1])*(pos[begin][1] - pos[end][1]))
+    return distance
 def getNearly(matrix,vertices):
     result = []
     for i in range(len(matrix[vertices])):
@@ -188,7 +195,7 @@ def BestFS(matrix,start,end):
                 queue[element] = weightNode[start, element]
         return visited,path
 
-def astart(matrix,start,end,pos,weightNode):
+def Astar(matrix,start,end,pos):
     path = [end]
     queue = {start:0}
     visited = {start:-1}
