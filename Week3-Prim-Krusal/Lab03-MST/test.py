@@ -4,8 +4,8 @@ import operator
 from collections import OrderedDict
 def main():
     matrix = readFile("MST.txt").astype(int)
-    kruskal(matrix)
-    # prim(matrix)
+    # kruskal(matrix)
+    prim(matrix)
     # weightNode = getWeight(matrix)
     # print(weightNode)
 def createTag(allEdges):
@@ -64,8 +64,10 @@ def kruskal(matrix):
     allEdges = list(getWeight(matrix)) #get all edges with their weight
     tag = createTag(allEdges) #tag with [min,max] of item
     print(tag.items())
-    edges = [allEdges.pop(0)]              #return value
-    while len(edges) < len(matrix):
+    # edges = [allEdges.pop(0)]              #return value
+    edges = []
+    i = 0
+    while i < 20:
         checkItem = allEdges.pop(0)
         print((checkItem[0],checkItem[1]))
         print("edges now: ",edges)
@@ -74,6 +76,7 @@ def kruskal(matrix):
             edges.append(checkItem)
             setTag(tag,checkItem)
         print("\n")
+        i +=1 
 # def getTag():
 
     
@@ -122,19 +125,19 @@ def findKeyMin(u, queue):
             del newqueue[i]
     return min(newqueue, key=newqueue.get)
 def prim(matrix):
-    v_u = [] #create list of vertice
-    for i in range(len(matrix)):
-        v_u.append(i)
-    u = []
     
     weightNode = getWeight(matrix)
     # queue = PriorityQueue()
     # isCircle = {}
-    # n_v=matrix.shape[0]
-    # np.random.seed(0)
-    # start_v=np.random.randint(0,n_v-1)
+    n_v=matrix.shape[0]
+    np.random.seed(0)
+    start_v=np.random.randint(0,n_v-1)
     queue = {}
-    start_v = v_u.pop(0)
+    v_u = [] #create list of vertice
+    for i in range(len(matrix)):
+        if i != start_v:
+            v_u.append(i)
+    u = []
     edges=[]
     while True:
         u.append(start_v)

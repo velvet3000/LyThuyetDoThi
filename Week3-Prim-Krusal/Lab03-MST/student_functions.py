@@ -103,13 +103,16 @@ def Prim(matrix):
         example: [[1,2],[3,4],[4,5]]
     """
     # TODO: 
+    weightNode = getWeight(matrix)
+    n_v=matrix.shape[0]
+    np.random.seed(0)
+    start_v=np.random.randint(0,n_v-1)
+    queue = {}
     v_u = [] #create list of vertice
     for i in range(len(matrix)):
-        v_u.append(i)
+        if i != start_v:
+            v_u.append(i)
     u = []
-    weightNode = getWeight(matrix)
-    queue = {}
-    start_v = v_u.pop(0)
     edges=[]
     while True:
         u.append(start_v)
@@ -157,7 +160,6 @@ def Kruskal(matrix):
         if notCycle(checkItem, tag):  #check if add edge becoming a cycle of not
             edges.append(checkItem)
             setTag(tag,checkItem)
-    print(edges)
     return edges
 
 def getWeight(matrix):
