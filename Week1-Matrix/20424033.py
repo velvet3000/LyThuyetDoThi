@@ -1,11 +1,23 @@
 import numpy as np
-
+import operator
 # My enviroment: I'm using Visual Studio Code
 # To import numby, I'm running this line in Integrated Terminal: pip install numpy
-
+#https://docs.google.com/spreadsheets/d/1YUoRfw-ES9mif7zuK5a8qPn0yY9ehRPzolk2e_fmHW8/edit#gid=0
+def getWeight(matrix):
+    weightNode = {}
+    sorted_dict = {}
+    for i in range(len(matrix)):
+        for j in range(len(matrix)):
+            if matrix[j][i] > 0 and (i,j) not in list(weightNode.keys()) and (j,i) not in list(weightNode.keys()):
+                weightNode[i,j] = matrix[j][i]
+    sorted_tuples = sorted(weightNode.items(), key=operator.itemgetter(1))
+    for k, v in sorted_tuples:
+        sorted_dict[k] = v
+    return sorted_dict
 def main():
    arr = readFile('data.txt')
    print(arr)
+   print(getWeight(arr))
    print("Cau 1: ")
    if isUnDirectGraph(arr):
        print ("Là đồ thị vô hướng")
