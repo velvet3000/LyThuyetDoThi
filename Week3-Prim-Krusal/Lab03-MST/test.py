@@ -3,7 +3,30 @@ import queue as PriorityQueue
 import operator
 from collections import OrderedDict
 #added
+def getNearly(matrix,vertices):
+    result = []
+    for i in range(len(matrix[vertices])):
+        if matrix[vertices][i]>0:
+            result.append(i)
+    return result
+def ConnectedComponents(matrix):
+    vertices = {}
+    edges = []
+    component = []
+    for i in range(len(matrix)):
+        vertices[i] = 0
+    for v in vertices:
+        nearly = getNearly(matrix,v)
+        if len(nearly) == 0:
+            edges.append(component)
+            component = []
+        for n in nearly:
+            if vertices[n] == 0:
+                component.append([v,n])
+                vertices[n] = 1
+        print(component)
 
+    print("all edges: {}",format(edges))
 def main():
     matrix = readFile("MST.txt").astype(int)
     # kruskal(matrix)
